@@ -5,4 +5,4 @@ const CreateNFT = () => {
   )
 }
 
-export default CreateNFT
+export default CreateNFT;
