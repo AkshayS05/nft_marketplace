@@ -1,5 +1,8 @@
+// to use a script tag
+import Script from 'next/script'
 // to switch between light and dark mode
 import { ThemeProvider } from 'next-themes'
+
 import { Navbar,Footer } from '../components'
 import '../styles/globals.css'
 
@@ -12,6 +15,7 @@ export default function App({ Component, pageProps }) {
     <Component {...pageProps} />
   <Footer />
     </div>
+    <Script src="https://kit.fontawesome.com/e644cb8867.js" crossorigin="anonymous"></Script>
     </ThemeProvider>
     )
 }
