@@ -27,7 +27,7 @@ const Footer = () => {
 
         <div className="flexCenter cursor-pointer">
         <Image src={images.logo02} objectFit='contain' width={32} height={32} alt="logo"/>
-        <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">CryptoKoin</p>
+        <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">KryptoMarket</p>
         </div>
 
         <p className="font-poppins dark:text-white text-nft-black-1 mt-6 text-base font-semibold">
