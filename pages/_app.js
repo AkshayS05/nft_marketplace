@@ -3,12 +3,15 @@ import Script from 'next/script';
 // to switch between light and dark mode
 import { ThemeProvider } from 'next-themes'
 
+import { NFTProvider } from '../context/NFTContext';
 import { Navbar,Footer } from '../components'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps }) {
   return(
-    // here attribute= class means we want to change mode on the basis of classes
+    <NFTProvider>
+
+    {/* here attribute= class means we want to change mode on the basis of classes */}
     <ThemeProvider attribute="class">
 <div className='dark:bg-nft-dark bg-white min-h-screen' >
   <Navbar />
@@ -20,5 +23,6 @@ export default function App({ Component, pageProps }) {
     </div>
     <Script src="https://kit.fontawesome.com/e644cb8867.js" crossorigin="anonymous"></Script>
     </ThemeProvider>
+    </NFTProvider>
     )
 }
