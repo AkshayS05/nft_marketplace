@@ -78,7 +78,7 @@ const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } =
             title='Description'
             placeholder='NFT Description'
             handleClick={(e)=> setFormInput({...formInput, description:e.target.value})} />
-          
+            
           <Input 
           inputType='number' 
             title='Price'
