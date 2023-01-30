@@ -6,16 +6,23 @@ import { useTheme } from "next-themes";
 
 import { Button, Input } from "../components";
 import images from "../assets";
+import { NFTContext } from "../context/NFTContext";
 
 const CreateNFT = () => {
   // to set form inputs
-  const [formInput, setFormInput] = useState({ price:'', description:'', name:'' });
-  const {theme} = useTheme();
-  const [fileUrl, setFileUrl] = useState(null);
+  const [ formInput, setFormInput ] = useState({ price:'', description:'', name:'' });
+  const { theme } = useTheme();
+  const [ fileUrl, setFileUrl ] = useState(null);
+  const { uploadToIpfs } = useContext(NFTContext);
 
-  const onDrop = useCallback(()=>{
+  // accepted file will be provided by react dropzone
+  const onDrop = useCallback(async (acceptedFile)=>{
     // upload image to the ipfs
+   const url = await uploadToIpfs(acceptedFile[0]);
+    console.log(url);
+   setFileUrl(url);
   },[]);
+
 // to check if the file type is valid of not jn order to change styles of the dropzone
 const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } =  useDropzone({
   onDrop,

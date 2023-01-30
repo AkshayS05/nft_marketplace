@@ -2,8 +2,11 @@ import react, { useState, useEffect } from "react";
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import axios from "axios";
-
+import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { MarketAddress, MarketAddressABI } from "./constant";
+
+
+const client = ipfsHttpClient('https://ipfs.infura.io:5000/api/v0');
 
 export const NFTContext = react.createContext();
 
@@ -41,8 +44,20 @@ export const NFTProvider = ({ children }) => {
         window.location.reload();
     }
 
+    const uploadedToIpfs =  async (file)=>{
+        try {
+            const added= await client.add({ content: file});
+
+            const url= `https://ipfs.infura.io/ipfs/${added.path}`;
+            return url;
+        } catch (error) {
+            
+            console.log("Error uploading file to ipfs");
+        }
+    }
+
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount }}>
+        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadedToIpfs }}>
             {children}
         </NFTContext.Provider>
     );
