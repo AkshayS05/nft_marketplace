@@ -9,100 +9,120 @@ import images from "../assets";
 import { NFTContext } from "../context/NFTContext";
 
 const CreateNFT = () => {
+
   // to set form inputs
   const [ formInput, setFormInput ] = useState({ price:'', description:'', name:'' });
   const { theme } = useTheme();
   const [ fileUrl, setFileUrl ] = useState(null);
-  const { uploadToIpfs } = useContext(NFTContext);
+  const router =  useRouter();
+
+  const { uploadToIPFS, createNFT } = useContext(NFTContext);
 
   // accepted file will be provided by react dropzone
-  const onDrop = useCallback(async (acceptedFile)=>{
+  const onDrop = useCallback(async (acceptedFile) => {
     // upload image to the ipfs
-   const url = await uploadToIpfs(acceptedFile[0]);
-    console.log(url);
-   setFileUrl(url);
+    try{
+      console.log("Called");
+      const url = await uploadToIPFS(acceptedFile[0]);
+      
+      console.log(url);
+  
+      setFileUrl(url);
+ 
+  }catch(err){
+    console.log(err);
+  };
   },[]);
 
-// to check if the file type is valid of not jn order to change styles of the dropzone
-const {getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } =  useDropzone({
+// to check if the file type is valid or not in order to change styles of the dropzone
+const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
   onDrop,
-  accept:'image/*',
-  maxSize:5000000,
+  accept: 'image/*',
+  maxSize: 5000000,
 });
 
-  const fileStyle = useMemo(()=>(
-    `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 p-5 flex flex-col items-center rounded-sm border-dashed
-    ${isDragActive && 'border-file-active'}
-    ${isDragAccept && 'border-file-accept'}
-    ${isDragReject && 'border-file-reject'}
-    `
-  ),[isDragActive, isDragAccept, isDragReject]);
+const fileStyle = useMemo(
+  () => (
+    `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed  
+     ${isDragActive ? ' border-file-active ' : ''} 
+     ${isDragAccept ? ' border-file-accept ' : ''} 
+     ${isDragReject ? ' border-file-reject ' : ''}`),
+  [isDragActive, isDragReject, isDragAccept],
+);
 
   return (
-    <div className="flex justify-center p-12 sm:px-4">
+    <div className="flex justify-center sm:px-4 p-12">
     <div className="w-3/5 md:w-full">
-      <h1 className="font-popins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0">Create new NFT</h1>
+      <h1 className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl">Create new item</h1>
+
       <div className="mt-16">
-        <p className="font-popins dark:text-white text-nft-black-1 font-semibold text-xl">Upload File</p>
-      </div>
-      <div className="mt-4">
-        <div {...getRootProps} className={fileStyle}>
-          <input {...getInputProps}/>
-          <div className="flexCenter flex-col text-center">
-            <p className="font-popins dark:text-white text-nft-black-1 font-semibold text-xl">
-            JPG, PNG, GIF, SVG, WEBM MAX 100mb</p>
-            <div className="w-full my-12 flex justify-center">
-              <Image src={images.upload} 
-                width={100}
-                height={100}
-                objectFit="contain"
-                alt="file upload"
-                className={theme === 'light' && 'filter invert'}
-              />
+        <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">Upload file</p>
+        <div className="mt-4">
+          <div {...getRootProps()} className={fileStyle}>
+            <input {...getInputProps()} />
+            <div className="flexCenter flex-col text-center">
+              <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">JPG, PNG, GIF, SVG, WEBM, MP3, MP4. Max 100mb.</p>
+
+              <div className="my-12 w-full flex justify-center">
+                <Image
+                  src={images.upload}
+                  width={100}
+                  height={100}
+                  objectFit="contain"
+                  alt="file upload"
+                  className={theme === 'light' ? 'filter invert' : undefined}
+                />
+              </div>
+
+              <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">Drag and Drop File</p>
+              <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm mt-2">Or browse media on your device</p>
             </div>
-            <p className="font-popins dark:text-white text-nft-black-1 font-semibold text-sm">
-            Drag and Drop File</p>
-            <p className="mt-2 font-popins dark:text-white text-nft-black-1 font-semibold text-sm">
-            or Browse media on your device</p>
           </div>
+          {fileUrl && (
+            <aside>
+              <div>
+                <img
+                  src={fileUrl}
+                  alt="Asset_file"
+                />
+              </div>
+            </aside>
+          )}
         </div>
-        {fileUrl && (
-          <aside>
-            <div>
-              <img src={fileUrl} alt="asset_file" />
-            </div>
-          </aside>
-        )}
       </div>
-          <Input 
-          inputType='input' 
-            title='Name'
-            placeholder='NFT Name'
-            handleClick={(e)=> setFormInput({...formInput, name:e.target.value})} />
 
-          <Input 
-          inputType='textarea' 
-            title='Description'
-            placeholder='NFT Description'
-            handleClick={(e)=> setFormInput({...formInput, description:e.target.value})} />
-            
-          <Input 
-          inputType='number' 
-            title='Price'
-            placeholder='NFT Price'
-            handleClick={(e)=> setFormInput({...formInput, price:e.target.value})} />
-
-        <div className='mt-7 w-full justify-end'>
-        <Button 
-        btnName='Create NFT'
-        className='rounded-xl'
-        handleClick={()=>{}}
+      <Input
+        inputType="input"
+        title="Name"
+        placeholder="Asset Name"
+        handleClick={(e) => updateFormInput({ ...formInput, name: e.target.value })}
       />
-            </div>
-      </div>
 
+      <Input
+        inputType="textarea"
+        title="Description"
+        placeholder="Asset Description"
+        handleClick={(e) => updateFormInput({ ...formInput, description: e.target.value })}
+      />
+
+      <Input
+        inputType="number"
+        title="Price"
+        placeholder="Asset Price"
+        handleClick={(e) => updateFormInput({ ...formInput, price: e.target.value })}
+      />
+
+      <div className="mt-7 w-full flex justify-end">
+        <Button
+          btnName="Create Item"
+          btnType="primary"
+          classStyles="rounded-xl"
+          handleClick={ () => createNFT(formInput, fileUrl, router)}
+        />
+      </div>
     </div>
-  )
-}
+  </div>
+  );
+};
 
 export default CreateNFT;
